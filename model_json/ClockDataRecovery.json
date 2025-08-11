@@ -1,0 +1,9 @@
+{
+    "model_name": "ClockDataRecovery",
+    "model_description": "A clock and data recovery circuit consisting of four key components: a phase detector (PD), loop filter (LF), voltage-controlled oscillator (VCO), and data recovery unit. The PD detects phase differences between input data and the VCO clock, the LF converts phase errors into a control voltage, the VCO generates an adjustable clock signal, and the recovery unit samples data using the synchronized clock.",
+    "inputnode": "DataIn (input data signal to be recovered), Vctrl_Init (initial VCO control voltage for setting starting oscillation frequency), VDD (positive power supply), VSS (negative power supply/ground)",
+    "outputnode": "RecoveredClk (recovered clock signal synchronized to data), RecoveredData (recovered data signal)",
+    "parameter": null,
+    "parameter_description": null,
+    "netlist": null
+}

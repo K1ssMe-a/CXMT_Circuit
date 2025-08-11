@@ -1,0 +1,9 @@
+{
+    "model_name": "Inverter",
+    "model_description": "Digital inverter, complete the voltage inversion of the digital level",
+    "inputnode": "Vin (input digital signal), VDD (positive power supply voltage), GND (ground connection)",
+    "outputnode": "Vout (inverted output digital signal)",
+    "parameter": null,
+    "parameter_description": null,
+    "netlist": null
+}

@@ -1,41 +1,32 @@
-# PySpice Module Functionality Test
+## Module Functionality Test Prompt
 
 Please list the basic test items to ensure the [Model] circuit module is functioning properly, along with the corresponding PySpice code for each test item. Below is a reference template for question input and answer.
 
-## Model Description
+### Model Description
 
-Model: Inverter01
+Model: Inverter
+
 Description: Digital inverter, completes voltage inversion of digital levels
-Input Nodes: Vin, VDD, GND
-Output Nodes: Vout
 
-## Model Code
+Input Nodes: Vin (input digital signal), VDD (positive power supply voltage), GND (ground connection)
 
-```python
-from PySpice.Unit import *
-from PySpice.Spice.Netlist import SubCircuitFactory
+Output Nodes: Vout (inverted output digital signal)
 
-class Inverter01(SubCircuitFactory):
-    NAME = 'Inverter01'
-    NODES = ('Vin', 'Vout', 'GND', 'VDD')
-    def __init__(self, nmos_width=0.5e-6, pmos_width=1e-6, channel_length=0.18e-6, load_capacitance=10e-15):
-        super().__init__()
-        # Define MOSFET models (level 1)
-        self.model('nmos_model', 'nmos', level=1, kp=100e-6, vto=0.5)
-        self.model('pmos_model', 'pmos', level=1, kp=40e-6, vto=-0.5)
-    
-        # Topology
-        self.MOSFET('M1', 'Vout', 'Vin', 'VDD', 'VDD', model='pmos_model', w=pmos_width, l=channel_length)
-        self.MOSFET('M2', 'Vout', 'Vin', 'GND', 'GND', model='nmos_model', w=nmos_width, l=channel_length)
-    
-        # Load capacitance (optional)
-        if load_capacitance > 0:
-            self.C('C1', 'Vout', 'GND', load_capacitance)
+Parameter Description: 
+
+- nmos_width: Channel width of the NMOS transistor, Raising this value increases the NMOS drive strength, but also enlarges the area and raises parasitic capacitances.
+- pmos_width: Channel width of the PMOS transistor. Increasing it enhances the PMOS drive capability and improves the rising-edge speed, yet it expands the area and raises power consumption
+- channel_length: MOSFET channel length. Shortening it boosts switching speed but aggravates short-channel effects; lengthening it reduces leakage current.
+- load_capacitance: Capacitive load at the output node. Larger values slow the switching transients and increase propagation delay; setting it to 0 removes the load capacitor.
+
+
+### Test Item Code
+
+#### Test_Item 01
+
+```markdown
+Power supply condition test: The test method involves performing a DC operating point analysis. Set the input to low level (0V) and high level (Vdd) respectively. Check if the output is close to Vdd when the input is low, and close to 0V when the input is high. This verifies the static operating point of the inverter.
 ```
-
-## Test Item Code
-
-### Test_Item 01
 
 ```python
 import sys
@@ -49,11 +40,10 @@ from PySpice.Unit import *
 from PySpice.Spice.Netlist import SubCircuitFactory
 
 def test_inverter_static():
-    '''Power supply condition test: The test method involves performing a DC operating point analysis. Set the input to low level (0V) and high level (Vdd) respectively. Check if the output is close to Vdd when the input is low, and close to 0V when the input is high. This verifies the static operating point of the inverter.'''
     circuit = Circuit('Inverter Static Test')
   
     vdd = circuit.V('dd', 'VDD', circuit.gnd, 5@u_V)
-    circuit.subcircuit(Inverter01())
+    circuit.subcircuit(Inverter())
     circuit.X('1', 'Inverter01', 'Vin', 'Vout', circuit.gnd, 'VDD')
   
     input_source = circuit.V('in', 'Vin', circuit.gnd, 0@u_V)
@@ -109,7 +99,11 @@ if __name__ == "__main__":
     test_inverter_static()
 ```
 
-### Test_Item 02
+#### Test_Item 02
+
+```markdown
+Transistor threshold voltage condition test: The test method uses a DC sweep analysis to scan the input voltage from 0V to Vdd. Observe if the output voltage changes as expected. Specifically, the output should be close to Vdd when the input is below the NMOS threshold voltage, and close to 0V when the input is above the NMOS threshold voltage.
+```
 
 ```python
 import sys
@@ -124,8 +118,6 @@ from PySpice.Spice.Netlist import Circuit
 from PySpice.Unit import *
 
 def test_inverter_threshold_condition():
-    '''Transistor threshold voltage condition test: The test method uses a DC sweep analysis to scan the input voltage from 0V to Vdd. Observe if the output voltage changes as expected. Specifically, the output should be close to Vdd when the input is below the NMOS threshold voltage, and close to 0V when the input is above the NMOS threshold voltage.'''
-  
     # Create circuit
     circuit = Circuit('Inverter Threshold Condition Test')
   
@@ -134,7 +126,7 @@ def test_inverter_threshold_condition():
     vdd = circuit.V('dd', 'VDD', circuit.gnd, vdd_value@u_V)
   
     # Add inverter subcircuit
-    circuit.subcircuit(Inverter01(
+    circuit.subcircuit(Inverter(
         nmos_width=0.5e-6,
         pmos_width=1e-6,
         channel_length=0.18e-6,
@@ -242,8 +234,8 @@ if __name__ == "__main__":
 
 Additional notes not included in the response:
 
-1. Users only enter the Mode Description and Model Code sections, and you need to answer the Test Item Code sections accordingly.
-2. Please write the test instructions in the form of annotations at the beginning of the function.
+1. Users only enter the Mode Description section, and you need to answer the Test Item Code sections accordingly.
+2. Each Test Item section includes a desciption (markdown) and a testcode (python)
 3. The default test voltage for VDD is 5V.
 4. Please do not generate code for plotting output waveforms or storing waveform data.
 5. Use "Test_Passed" as the indicator if the test is successful, and "Test_Failed" if the test is unsuccessful.
@@ -255,12 +247,13 @@ Here is the specific input:
 ## Model Description
 
 Model: [Model]
+
 Description: [Description]
+
 Input Nodes: [InputNode]
+
 Ouput Nodes: [OutputNode]
 
-## Model Code
+Parameter Description:
 
-```python
-[ModelCode]
-```
+[Parameter_Des]

@@ -1,0 +1,15 @@
+{
+    "model_name": "TwoStageDifferentialOpamp",
+    "model_description": "A two-stage differential opamp (first stage: common-source with an active load and a tail current, second stage: common-source with an active load)",
+    "inputnode": "Vinp (positive differential input signal), Vinn (negative differential input signal), Vbias1 (first stage bias voltage), Vbias2 (second stage bias voltage), Vbias3 (tail current bias voltage)",
+    "outputnode": "Voutp (positive differential output signal), Vout (negative differential output signal)",
+    "parameter": null,
+    "parameter_description": null,
+    "netlist": null,
+    "testcode": null,
+    "testDescription": null,
+    "submodel_names": [
+        "DiffInputStage",
+        "CSGainStage"
+    ]
+}
